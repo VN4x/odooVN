@@ -1,0 +1,4 @@
+localhost {
+    reverse_proxy odoo:8069
+    tls internal  # Self-signed cert for local; remove for prod
+}

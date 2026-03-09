@@ -1,0 +1,43 @@
+version '3.8'
+services
+  db
+    image postgres16  # Latest stable for Odoo compatibility
+    restart always
+    environment
+      - POSTGRES_DB=odoo
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes
+      - db-datavarlibpostgresqldata  # Persist DB
+
+  odoo
+    image odoo17.0  # Community Edition; change to 18.0 if available
+    restart always
+    depends_on
+      - db
+    ports
+      - 80698069  # Odoo web port (internal)
+    environment
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes
+      - odoo-web-datavarlibodoo  # Persist filestore
+      - .addonsmntextra-addons  # Mount customOCA modules here
+
+  caddy
+    image caddy2-alpine
+    restart always
+    depends_on
+      - odoo
+    ports
+      - 8080
+      - 443443
+    volumes
+      - .CaddyfileetccaddyCaddyfile  # Config file
+      - caddy-datadata  # Persist certs
+
+volumes
+  db-data
+  odoo-web-data
+  caddy-data
